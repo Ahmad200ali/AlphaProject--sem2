@@ -3,12 +3,34 @@ public class Player
     public string Name;
     public int CurrentHitPoints;
     public int MaximumHitPoints;
+    public List<Item> Inventory = new List<Item>();
 
     public Player(string name, int maximumHitPoints)
     {
         Name = name;
         MaximumHitPoints = maximumHitPoints;
         CurrentHitPoints = maximumHitPoints;
+    }
+
+    public void AddItem(Item item)
+    {
+        Inventory.Add(item);
+        Console.WriteLine($"{item.Name} was added to your inventory.");
+    }
+
+    public void ShowInventory()
+    {
+        if (Inventory.Count == 0)
+        {
+            Console.WriteLine("Your inventory is empty.");
+            return;
+        }
+
+        Console.WriteLine("Inventory:");
+        foreach (Item item in Inventory)
+        {
+            Console.WriteLine($"- {item.Name}");
+        }
     }
 
     public void ShowHealth()

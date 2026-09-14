@@ -1,13 +1,9 @@
-public class Weapon
+public class Weapon : Item
 {
-    public int ID;
-    public string Name;
     public int MaximumDamage;
 
-    public Weapon(int id, string name, int maximumDamage)
+    public Weapon(int id, string name, int maximumDamage) : base(id, name)
     {
-        ID = id;
-        Name = name;
         MaximumDamage = maximumDamage;
     }
 }
