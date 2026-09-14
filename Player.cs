@@ -166,13 +166,14 @@ public class Player
 
     public void Heal(int amount)
     {
+        int oldHitPoints = CurrentHitPoints;
         CurrentHitPoints += amount;
         if (CurrentHitPoints > MaximumHitPoints)
         {
             CurrentHitPoints = MaximumHitPoints;
         }
 
-        Console.WriteLine($"You recovered {amount} health.");
+        Console.WriteLine($"You recovered {CurrentHitPoints - oldHitPoints} health.");
         ShowHealth();
     }
 }
