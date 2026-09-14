@@ -4,6 +4,8 @@ public class Player
     public int CurrentHitPoints;
     public int MaximumHitPoints;
     public List<Item> Inventory = new List<Item>();
+    public Weapon? CurrentWeapon;
+    public bool InFight;
 
     public Player(string name, int maximumHitPoints)
     {
@@ -29,8 +31,36 @@ public class Player
         Console.WriteLine("Inventory:");
         foreach (Item item in Inventory)
         {
-            Console.WriteLine($"- {item.Name}");
+            if (item == CurrentWeapon)
+            {
+                Console.WriteLine($"- {item.Name} (equipped)");
+            }
+            else
+            {
+                Console.WriteLine($"- {item.Name}");
+            }
         }
+    }
+
+    public void SwitchWeapon(string weaponName)
+    {
+        if (InFight)
+        {
+            Console.WriteLine("You can't switch weapons during a fight.");
+            return;
+        }
+
+        foreach (Item item in Inventory)
+        {
+            if (item is Weapon weapon && weapon.Name.ToLower() == weaponName.ToLower())
+            {
+                CurrentWeapon = weapon;
+                Console.WriteLine($"You are now using the {weapon.Name}.");
+                return;
+            }
+        }
+
+        Console.WriteLine($"You don't have a weapon called {weaponName}.");
     }
 
     public void ShowHealth()
