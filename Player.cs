@@ -6,6 +6,9 @@ public class Player
     public List<Item> Inventory = new List<Item>();
     public Weapon? CurrentWeapon;
     public bool InFight;
+    public Location? CurrentLocation;
+    public List<int> CompletedQuestIDs = new List<int>();
+    public List<int> KilledMonsterIDs = new List<int>();
 
     public Player(string name, int maximumHitPoints)
     {
@@ -119,6 +122,46 @@ public class Player
     public bool IsDead()
     {
         return CurrentHitPoints == 0;
+    }
+
+    public void CompleteQuest(Quest quest)
+    {
+        if (!CompletedQuestIDs.Contains(quest.ID))
+        {
+            CompletedQuestIDs.Add(quest.ID);
+        }
+    }
+
+    public void AddKilledMonster(Monster monster)
+    {
+        if (!KilledMonsterIDs.Contains(monster.ID))
+        {
+            KilledMonsterIDs.Add(monster.ID);
+        }
+    }
+
+    public bool HasWonGame()
+    {
+        // all quests done
+        foreach (Quest quest in World.Quests)
+        {
+            if (!CompletedQuestIDs.Contains(quest.ID))
+            {
+                return false;
+            }
+        }
+
+        // every monster killed at least once
+        foreach (Monster monster in World.Monsters)
+        {
+            if (!KilledMonsterIDs.Contains(monster.ID))
+            {
+                return false;
+            }
+        }
+
+        // and you have to be in the spider forest
+        return CurrentLocation != null && CurrentLocation.ID == World.LOCATION_ID_SPIDER_FIELD;
     }
 
     public void Heal(int amount)
