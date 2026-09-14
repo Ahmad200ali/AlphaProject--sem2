@@ -63,6 +63,37 @@ public class Player
         Console.WriteLine($"You don't have a weapon called {weaponName}.");
     }
 
+    public void UsePotion(string potionName)
+    {
+        foreach (Item item in Inventory)
+        {
+            if (item is Potion potion && potion.Name.ToLower() == potionName.ToLower())
+            {
+                if (potion.OnlyInFight && !InFight)
+                {
+                    Console.WriteLine($"You can only use the {potion.Name} during a fight.");
+                    return;
+                }
+
+                Heal(potion.AmountToHeal);
+                potion.UsesLeft--;
+
+                if (potion.UsesLeft == 0)
+                {
+                    Inventory.Remove(potion);
+                    Console.WriteLine($"The {potion.Name} is used up.");
+                }
+                else
+                {
+                    Console.WriteLine($"The {potion.Name} has {potion.UsesLeft} uses left.");
+                }
+                return;
+            }
+        }
+
+        Console.WriteLine($"You don't have a potion called {potionName}.");
+    }
+
     public void ShowHealth()
     {
         Console.WriteLine($"Health: {CurrentHitPoints}/{MaximumHitPoints}");

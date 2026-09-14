@@ -2,6 +2,7 @@ public static class World
 {
 
     public static readonly List<Weapon> Weapons = new List<Weapon>();
+    public static readonly List<Potion> Potions = new List<Potion>();
     public static readonly List<Monster> Monsters = new List<Monster>();
     public static readonly List<Quest> Quests = new List<Quest>();
     public static readonly List<Location> Locations = new List<Location>();
@@ -9,6 +10,9 @@ public static class World
 
     public const int WEAPON_ID_RUSTY_SWORD = 1;
     public const int WEAPON_ID_CLUB = 2;
+
+    public const int POTION_ID_HEALING_POTION = 3;
+    public const int POTION_ID_TROLL_BLOOD = 4;
 
     public const int MONSTER_ID_RAT = 1;
     public const int MONSTER_ID_SNAKE = 2;
@@ -31,6 +35,7 @@ public static class World
     static World()
     {
         PopulateWeapons();
+        PopulatePotions();
         PopulateMonsters();
         PopulateQuests();
         PopulateLocations();
@@ -41,6 +46,13 @@ public static class World
     {
         Weapons.Add(new Weapon(WEAPON_ID_RUSTY_SWORD, "Rusty sword", 5));
         Weapons.Add(new Weapon(WEAPON_ID_CLUB, "Club", 10));
+    }
+
+    public static void PopulatePotions()
+    {
+        // healing potion can be used anytime, troll blood only in a fight
+        Potions.Add(new Potion(POTION_ID_HEALING_POTION, "Healing potion", 5, 3, false));
+        Potions.Add(new Potion(POTION_ID_TROLL_BLOOD, "Troll blood", 10, 1, true));
     }
 
     public static void PopulateMonsters()
@@ -179,7 +191,18 @@ public static class World
         return null;
     }
 
+    public static Potion? PotionByID(int id)
+    {
+        foreach (Potion potion in Potions)
+        {
+            if (potion.ID == id)
+            {
+                return potion;
+            }
+        }
 
+        return null;
+    }
 
     public static Monster MonsterByID(int id)
     {
