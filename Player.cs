@@ -26,6 +26,16 @@ public class Player
 
         Console.WriteLine($"You lost {damage} health.");
         ShowHealth();
+
+        if (IsDead())
+        {
+            Console.WriteLine("Your health is 0. Game over!");
+        }
+    }
+
+    public bool IsDead()
+    {
+        return CurrentHitPoints == 0;
     }
 
     public void Heal(int amount)
