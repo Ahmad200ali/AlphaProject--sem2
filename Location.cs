@@ -5,6 +5,7 @@ public class Location
     public string Description;
     public Quest? QuestAvailableHere;
     public Monster? MonsterLivingHere;
+    public Item? ItemLayingHere;
 
     public Location? LocationToNorth;
     public Location? LocationToEast;

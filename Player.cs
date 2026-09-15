@@ -6,7 +6,7 @@ public class Player
     public List<Item> Inventory = new List<Item>();
     public Weapon? CurrentWeapon;
     public bool InFight;
-    public Location? CurrentLocation;
+    public Location CurrentLocation;
     public List<int> CompletedQuestIDs = new List<int>();
     public List<int> KilledMonsterIDs = new List<int>();
 
@@ -15,6 +15,7 @@ public class Player
         Name = name;
         MaximumHitPoints = maximumHitPoints;
         CurrentHitPoints = maximumHitPoints;
+        CurrentLocation = World.LocationByID(World.LOCATION_ID_HOME);
     }
 
     public void AddItem(Item item)
@@ -161,7 +162,124 @@ public class Player
         }
 
         // and you have to be in the spider forest
-        return CurrentLocation != null && CurrentLocation.ID == World.LOCATION_ID_SPIDER_FIELD;
+        return CurrentLocation.ID == World.LOCATION_ID_SPIDER_FIELD;
+    }
+
+    public bool HasCompletedQuest(int questID)
+    {
+        return CompletedQuestIDs.Contains(questID);
+    }
+
+    public void ShowLocation()
+    {
+        Console.WriteLine();
+        Console.WriteLine($"You are at: {CurrentLocation.Name}");
+        Console.WriteLine(CurrentLocation.Description);
+
+        if (CurrentLocation.ItemLayingHere != null)
+        {
+            Console.WriteLine($"You see a {CurrentLocation.ItemLayingHere.Name} lying here. Type 'take' to pick it up.");
+        }
+
+        ShowExits();
+    }
+
+    public void ShowExits()
+    {
+        Console.WriteLine("You can go:");
+
+        if (CurrentLocation.LocationToNorth != null)
+        {
+            Console.WriteLine($"- north to {CurrentLocation.LocationToNorth.Name}");
+        }
+        if (CurrentLocation.LocationToEast != null)
+        {
+            Console.WriteLine($"- east to {CurrentLocation.LocationToEast.Name}");
+        }
+        if (CurrentLocation.LocationToSouth != null)
+        {
+            Console.WriteLine($"- south to {CurrentLocation.LocationToSouth.Name}");
+        }
+        if (CurrentLocation.LocationToWest != null)
+        {
+            Console.WriteLine($"- west to {CurrentLocation.LocationToWest.Name}");
+        }
+    }
+
+    public void MoveTo(string direction)
+    {
+        if (InFight)
+        {
+            Console.WriteLine("You can't move during a fight.");
+            return;
+        }
+
+        Location? newLocation = null;
+
+        if (direction == "north")
+        {
+            newLocation = CurrentLocation.LocationToNorth;
+        }
+        else if (direction == "east")
+        {
+            newLocation = CurrentLocation.LocationToEast;
+        }
+        else if (direction == "south")
+        {
+            newLocation = CurrentLocation.LocationToSouth;
+        }
+        else if (direction == "west")
+        {
+            newLocation = CurrentLocation.LocationToWest;
+        }
+        else
+        {
+            Console.WriteLine($"'{direction}' is not a direction. Use north, east, south or west.");
+            return;
+        }
+
+        if (newLocation == null)
+        {
+            Console.WriteLine($"You can't go {direction} from here.");
+            ShowExits();
+            return;
+        }
+
+        if (!CanEnter(newLocation))
+        {
+            Console.WriteLine("The guard stops you. Clear the farmer's field and the alchemist's garden first.");
+            return;
+        }
+
+        CurrentLocation = newLocation;
+        ShowLocation();
+    }
+
+    public bool CanEnter(Location location)
+    {
+        // the guard post, bridge and spider forest are locked until both quests are done
+        if (location.ID == World.LOCATION_ID_GUARD_POST || location.ID == World.LOCATION_ID_BRIDGE || location.ID == World.LOCATION_ID_SPIDER_FIELD)
+        {
+            if (HasCompletedQuest(World.QUEST_ID_CLEAR_FARMERS_FIELD) && HasCompletedQuest(World.QUEST_ID_CLEAR_ALCHEMIST_GARDEN))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    public void TakeItem()
+    {
+        if (CurrentLocation.ItemLayingHere == null)
+        {
+            Console.WriteLine("There is nothing here to pick up.");
+            return;
+        }
+
+        AddItem(CurrentLocation.ItemLayingHere);
+        CurrentLocation.ItemLayingHere = null;
     }
 
     public void Heal(int amount)
