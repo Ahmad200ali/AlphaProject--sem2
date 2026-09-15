@@ -115,6 +115,17 @@ while (playing)
     {
         player.TakeItem();
     }
+    else if (command == "quest")
+    {
+        if (player.CurrentLocation.QuestAvailableHere == null)
+        {
+            Console.WriteLine("There is no quest available here.");
+        }
+        else
+        {
+            player.CurrentLocation.QuestAvailableHere.StartQuest(player);
+        }
+    }
     else if (command == "quit")
     {
         playing = false;
@@ -145,6 +156,7 @@ void ShowHelp()
     Console.WriteLine("north, east, south, west - move (or: go north)");
     Console.WriteLine("look - show where you are");
     Console.WriteLine("take - pick up the item here");
+    Console.WriteLine("quest - begin or continue the quest at this location");
     Console.WriteLine("inventory - show your items");
     Console.WriteLine("equip <weapon> - switch weapon");
     Console.WriteLine("use <potion> - use a potion");
