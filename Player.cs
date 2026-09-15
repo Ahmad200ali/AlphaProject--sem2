@@ -181,6 +181,11 @@ public class Player
             Console.WriteLine($"You see a {CurrentLocation.ItemLayingHere.Name} lying here. Type 'take' to pick it up.");
         }
 
+        if (CurrentLocation.QuestAvailableHere != null && !CurrentLocation.QuestAvailableHere.IsCompleted)
+        {
+            Console.WriteLine("A quest is available here. Type 'quest' to begin or continue it.");
+        }
+
         ShowExits();
     }
 
