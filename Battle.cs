@@ -25,9 +25,9 @@
     
                 while (choice != "1" && choice != "2"  && choice != "3" && choice != "4" ){
                 Console.WriteLine("Choose a way to attack:");
-                Console.WriteLine($"[1] Fast attack with {player.CurrentWeapon} with a chance of 80 % with damage of {player.CurrentWeapon.MaximumDamage}  ");
-                Console.WriteLine($"[2] Normal attack with {player.CurrentWeapon} with a chance of 60 % with damage of {2 * player.CurrentWeapon.MaximumDamage}  ");
-                Console.WriteLine($"[3] Hard attack with {player.CurrentWeapon} with a chance of 40 % with damage of {4 * player.CurrentWeapon.MaximumDamage}  ");
+                Console.WriteLine($"[1] Fast attack with {player.CurrentWeapon.Name} with a chance of 80 % with damage of {player.CurrentWeapon.MaximumDamage}  ");
+                Console.WriteLine($"[2] Normal attack with {player.CurrentWeapon.Name} with a chance of 60 % with damage of {2 * player.CurrentWeapon.MaximumDamage}  ");
+                Console.WriteLine($"[3] Hard attack with {player.CurrentWeapon.Name} with a chance of 40 % with damage of {4 * player.CurrentWeapon.MaximumDamage}  ");
                 Console.WriteLine($"[4] Flee from {monster.Name}");
 
                 choice = Console.ReadLine();
@@ -38,7 +38,8 @@
                     {
                         "1" => "Fast attack",
                         "2" => "Normal attack",
-                        "3" => "Hard attack"
+                        "3" => "Hard attack",
+                        _ => ""
                     };
 
                 if (choice == "1" &&  chance <= 80)
@@ -67,7 +68,14 @@
                     }
 
                 }
-                Console.WriteLine($"Player does a {typeofattack} with {damage} damage to {monster.Name}");
+                if (damage == 0)
+                {
+                    Console.WriteLine($"Player tries a {typeofattack} but misses {monster.Name}");
+                }
+                else
+                {
+                    Console.WriteLine($"Player does a {typeofattack} with {damage} damage to {monster.Name}");
+                }
                 monster.CurrentHitPoints -= damage;
                 if (monster.CurrentHitPoints <= 0 )
                 {
