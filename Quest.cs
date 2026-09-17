@@ -41,9 +41,26 @@ public class Quest
         while (KillCount < RequiredKillCount && !player.IsDead())
         {
             Monster enemy = new Monster(MonsterTarget.ID, MonsterTarget.Name, MonsterTarget.MaximumDamage, MonsterTarget.MaximumHitPoints, MonsterTarget.MaximumHitPoints);
-            Console.WriteLine($"\nA wild {enemy.Name} appears! Type 'attack' or 'flee'.");
+            bool PlayerHasWon;
+            while (true)
+            {
+                Console.WriteLine($"\nA wild {enemy.Name} appears! Type 'attack' or 'flee'.");
+                string choice = Console.ReadLine();
+                if(choice == "attack")
+                {   
+                    break;
+                }
+                else if(choice == "flee")
+                {
+                    Console.WriteLine("You fled from the monster. Quest paused.");
+                    return;
+                }
+                Console.WriteLine("invalid choice!");
+            }
             // wating for Batle class fight method
-            if ()
+            Battle battle = new(player,enemy);
+            PlayerHasWon = battle.BattleStart();
+            if (PlayerHasWon == false)
             {
                 if (!player.IsDead()) 
                 {
