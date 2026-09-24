@@ -10,6 +10,7 @@ public class Quest
     public int FightingLocationID;
     public Weapon? Reward;
     public Monster MonsterTarget;
+    public const int GoldReward = 30;
 
     public Quest(int id, string name, string description, int fightingLocationID, Monster monsterTarget, Weapon? reward = null)
     {
@@ -87,6 +88,8 @@ public class Quest
             World.HowManyQuestCompleted.Add(this);
         }
         Console.WriteLine($"\n=== QUEST COMPLETED: {Name} ===");
+        player.AddGold(GoldReward);
+        Console.WriteLine($"You received {GoldReward} gold for completing this quest!");
         if (Reward != null)
         {
             player.AddItem(Reward);

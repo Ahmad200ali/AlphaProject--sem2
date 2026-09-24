@@ -9,6 +9,7 @@ public class Player
     public Location CurrentLocation;
     public List<int> CompletedQuestIDs = new List<int>();
     public List<int> KilledMonsterIDs = new List<int>();
+    public int Gold = 30;
 
     public Player(string name, int maximumHitPoints)
     {
@@ -101,6 +102,64 @@ public class Player
     public void ShowHealth()
     {
         Console.WriteLine($"Health: {CurrentHitPoints}/{MaximumHitPoints}");
+    }
+
+    public void AddGold(int amount)
+    {
+        Gold += amount;
+        Console.WriteLine($"Gold: {Gold}");
+    }
+
+    public void ShowGold()
+    {
+        Console.WriteLine($"Gold: {Gold}");
+    }
+
+    public void ShowShop()
+    {
+        if (CurrentLocation.ID != World.LOCATION_ID_GUARD_POST)
+        {
+            Console.WriteLine("The shop is at the guard post.");
+            return;
+        }
+
+        Weapon monsterSword = World.WeaponByID(World.WEAPON_ID_MONSTER_SWORD);
+        Console.WriteLine("Guard post shop:");
+        Console.WriteLine($"- {monsterSword.Name}: {World.MONSTER_SWORD_PRICE} gold ({monsterSword.MaximumDamage} damage)");
+        ShowGold();
+    }
+
+    public void BuyItem(string itemName)
+    {
+        if (CurrentLocation.ID != World.LOCATION_ID_GUARD_POST)
+        {
+            Console.WriteLine("You can only buy items at the guard post shop.");
+            return;
+        }
+
+        Weapon monsterSword = World.WeaponByID(World.WEAPON_ID_MONSTER_SWORD);
+        if (itemName.ToLower() != monsterSword.Name.ToLower())
+        {
+            Console.WriteLine("That item is not for sale. Type 'shop' to see what is available.");
+            return;
+        }
+
+        if (Inventory.Any(item => item.ID == monsterSword.ID))
+        {
+            Console.WriteLine("You already own the Monster Sword.");
+            return;
+        }
+
+        if (Gold < World.MONSTER_SWORD_PRICE)
+        {
+            Console.WriteLine($"The Monster Sword costs {World.MONSTER_SWORD_PRICE} gold. You have {Gold} gold.");
+            return;
+        }
+
+        Gold -= World.MONSTER_SWORD_PRICE;
+        AddItem(monsterSword);
+        CurrentWeapon = monsterSword;
+        Console.WriteLine($"You bought and equipped the {monsterSword.Name}! Gold remaining: {Gold}");
     }
 
     public void TakeDamage(int damage)
