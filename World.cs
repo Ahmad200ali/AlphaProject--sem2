@@ -11,6 +11,8 @@ public static class World
 
     public const int WEAPON_ID_RUSTY_SWORD = 1;
     public const int WEAPON_ID_CLUB = 2;
+    public const int WEAPON_ID_MONSTER_SWORD = 3;
+    public const int MONSTER_SWORD_PRICE = 90;
 
     public const int POTION_ID_HEALING_POTION = 3;
     public const int POTION_ID_TROLL_BLOOD = 4;
@@ -47,6 +49,7 @@ public static class World
     {
         Weapons.Add(new Weapon(WEAPON_ID_RUSTY_SWORD, "Rusty sword", 5));
         Weapons.Add(new Weapon(WEAPON_ID_CLUB, "Club", 10));
+        Weapons.Add(new Weapon(WEAPON_ID_MONSTER_SWORD, "Monster Sword", 20));
     }
 
     public static void PopulatePotions()

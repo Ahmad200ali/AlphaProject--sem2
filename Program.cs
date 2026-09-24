@@ -89,6 +89,25 @@ while (playing)
     {
         player.ShowHealth();
     }
+    else if (command == "gold")
+    {
+        player.ShowGold();
+    }
+    else if (command == "shop")
+    {
+        player.ShowShop();
+    }
+    else if (command == "buy")
+    {
+        if (argument == "")
+        {
+            Console.WriteLine("Buy what? For example: buy monster sword");
+        }
+        else
+        {
+            player.BuyItem(argument);
+        }
+    }
     else if (command == "equip")
     {
         if (argument == "")
@@ -161,6 +180,9 @@ void ShowHelp()
     Console.WriteLine("equip <weapon> - switch weapon");
     Console.WriteLine("use <potion> - use a potion");
     Console.WriteLine("health - show your health");
+    Console.WriteLine("gold - show your gold");
+    Console.WriteLine("shop - see items for sale at the guard post");
+    Console.WriteLine("buy <item> - buy an item from the shop");
     Console.WriteLine("help - show the commands");
     Console.WriteLine("quit - stop playing");
 }
