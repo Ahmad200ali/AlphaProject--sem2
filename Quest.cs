@@ -8,32 +8,42 @@ public class Quest
     public bool IsCompleted;
     public bool IsActive;
     public int FightingLocationID;
-    public Weapon? Reward;
+    public List<Item> Rewards = new List<Item>();
     public Monster MonsterTarget;
     public const int GoldReward = 30;
 
-    public Quest(int id, string name, string description, int fightingLocationID, Monster monsterTarget, Weapon? reward = null)
+    public Quest(int id, string name, string description, int fightingLocationID, Monster monsterTarget)
     {
         ID = id;
         Name = name;
         Description = description;
         FightingLocationID = fightingLocationID;
         MonsterTarget = monsterTarget;
-        Reward = reward;
     }
 
     public void StartQuest(Player player)
     {
         if (IsCompleted) { Console.WriteLine("This quest has already been completed!"); return; }
+
+        // only one quest at a time
+        foreach (Quest quest in World.Quests)
+        {
+            if (quest.IsActive && quest != this)
+            {
+                Console.WriteLine($"Finish the quest '{quest.Name}' first.");
+                return;
+            }
+        }
+
         if (!IsActive)
         {
             IsActive = true;
-            player.CurrentLocation = World.LocationByID(FightingLocationID);
             Console.WriteLine($"\n=== QUEST: {Name} ===");
             Console.WriteLine(Description);
             Console.WriteLine($"Your goal: Kill {RequiredKillCount} {MonsterTarget.Name}(s)");
-            Console.WriteLine($"Location: {player.CurrentLocation.Name}");
         }
+        player.CurrentLocation = World.LocationByID(FightingLocationID);
+        Console.WriteLine($"Location: {player.CurrentLocation.Name} ({KillCount}/{RequiredKillCount} killed)");
         ContinueQuest(player);
     }
 
@@ -46,26 +56,30 @@ public class Quest
             while (true)
             {
                 Console.WriteLine($"\nA wild {enemy.Name} appears! Type 'attack' or 'flee'.");
-                string choice = Console.ReadLine();
+                string? choice = Console.ReadLine();
+                if (choice == null)
+                {
+                    return;
+                }
+                choice = choice.Trim().ToLower();
                 if(choice == "attack")
                 {   
                     break;
                 }
                 else if(choice == "flee")
                 {
-                    Console.WriteLine("You fled from the monster. Quest paused.");
+                    Console.WriteLine("You fled from the monster. Quest paused, type 'quest' at the quest giver to continue.");
                     return;
                 }
-                Console.WriteLine("invalid choice!");
+                Console.WriteLine("Invalid choice! Type 'attack' or 'flee'.");
             }
-            // wating for Batle class fight method
             Battle battle = new(player,enemy);
             PlayerHasWon = battle.BattleStart();
             if (PlayerHasWon == false)
             {
                 if (!player.IsDead()) 
                 {
-                    Console.WriteLine("You fled from the monster. Quest paused.");
+                    Console.WriteLine("You fled from the monster. Quest paused, type 'quest' at the quest giver to continue.");
                 }
                 return;
             }
@@ -88,13 +102,17 @@ public class Quest
             World.HowManyQuestCompleted.Add(this);
         }
         Console.WriteLine($"\n=== QUEST COMPLETED: {Name} ===");
-        player.AddGold(GoldReward);
         Console.WriteLine($"You received {GoldReward} gold for completing this quest!");
-        if (Reward != null)
+        player.AddGold(GoldReward);
+        foreach (Item reward in Rewards)
         {
-            player.AddItem(Reward);
-            player.CurrentWeapon = Reward;
-            Console.WriteLine($"You received and equipped {Reward.Name} ({Reward.MaximumDamage} damage)!");
+            player.AddItem(reward);
+            // only switch when the reward is stronger than what you are holding
+            if (reward is Weapon weapon && (player.CurrentWeapon == null || weapon.MaximumDamage > player.CurrentWeapon.MaximumDamage))
+            {
+                player.CurrentWeapon = weapon;
+                Console.WriteLine($"You equipped the {weapon.Name} ({weapon.MaximumDamage} damage)!");
+            }
         }
     }
 }
