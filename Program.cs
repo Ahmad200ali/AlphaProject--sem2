@@ -15,6 +15,11 @@ player.AddItem(World.WeaponByID(World.WEAPON_ID_RUSTY_SWORD));
 player.SwitchWeapon("Rusty sword");
 player.AddItem(World.PotionByID(World.POTION_ID_HEALING_POTION));
 
+Console.WriteLine();
+Console.WriteLine($"Welcome, {player.Name}! Monsters are bothering the town.");
+Console.WriteLine("Clear the alchemist's garden and the farmer's field, then the guard lets you cross the bridge.");
+Console.WriteLine("Collect the spider silk in the spider forest to win the game.");
+
 ShowHelp();
 player.ShowLocation();
 
@@ -54,21 +59,9 @@ while (playing)
     {
         player.ShowLocation();
     }
-    else if (command == "north")
+    else if (command == "north" || command == "east" || command == "south" || command == "west")
     {
-        player.MoveTo("north");
-    }
-    else if (command == "east")
-    {
-        player.MoveTo("east");
-    }
-    else if (command == "south")
-    {
-        player.MoveTo("south");
-    }
-    else if (command == "west")
-    {
-        player.MoveTo("west");
+        Move(command);
     }
     else if (command == "go")
     {
@@ -78,7 +71,7 @@ while (playing)
         }
         else
         {
-            player.MoveTo(argument);
+            Move(argument);
         }
     }
     else if (command == "inventory" || command == "i")
@@ -143,6 +136,10 @@ while (playing)
         else
         {
             player.CurrentLocation.QuestAvailableHere.StartQuest(player);
+            if (!player.IsDead() && !player.HasWonGame())
+            {
+                player.ShowLocation();
+            }
         }
     }
     else if (command == "quit")
@@ -167,6 +164,35 @@ while (playing)
 }
 
 Console.WriteLine("Thanks for playing!");
+
+void Move(string direction)
+{
+    Location oldLocation = player.CurrentLocation;
+    player.MoveTo(direction);
+
+    // ask to start the quest when you arrive at a quest giver
+    Quest? quest = player.CurrentLocation.QuestAvailableHere;
+    if (player.CurrentLocation == oldLocation || quest == null || quest.IsCompleted)
+    {
+        return;
+    }
+
+    string startOrContinue = quest.IsActive ? "continue" : "start";
+    Console.Write($"Do you want to {startOrContinue} the quest '{quest.Name}'? (yes/no) ");
+    string? answer = Console.ReadLine();
+    if (answer != null && (answer.Trim().ToLower() == "yes" || answer.Trim().ToLower() == "y"))
+    {
+        quest.StartQuest(player);
+        if (!player.IsDead() && !player.HasWonGame())
+        {
+            player.ShowLocation();
+        }
+    }
+    else
+    {
+        Console.WriteLine("Okay, come back later and type 'quest' to start it.");
+    }
+}
 
 void ShowHelp()
 {

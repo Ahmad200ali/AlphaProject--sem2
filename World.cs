@@ -12,10 +12,15 @@ public static class World
     public const int WEAPON_ID_RUSTY_SWORD = 1;
     public const int WEAPON_ID_CLUB = 2;
     public const int WEAPON_ID_MONSTER_SWORD = 3;
+    public const int WEAPON_ID_TRIDENT = 4;
+    public const int WEAPON_ID_GOLDEN_SWORD = 5;
     public const int MONSTER_SWORD_PRICE = 90;
 
-    public const int POTION_ID_HEALING_POTION = 3;
-    public const int POTION_ID_TROLL_BLOOD = 4;
+    // every item needs its own ID, otherwise the shop thinks you already own the sword
+    public const int POTION_ID_HEALING_POTION = 6;
+    public const int POTION_ID_TROLL_BLOOD = 7;
+
+    public const int ITEM_ID_SPIDER_SILK = 8;
 
     public const int MONSTER_ID_RAT = 1;
     public const int MONSTER_ID_SNAKE = 2;
@@ -50,6 +55,8 @@ public static class World
         Weapons.Add(new Weapon(WEAPON_ID_RUSTY_SWORD, "Rusty sword", 5));
         Weapons.Add(new Weapon(WEAPON_ID_CLUB, "Club", 10));
         Weapons.Add(new Weapon(WEAPON_ID_MONSTER_SWORD, "Monster Sword", 20));
+        Weapons.Add(new Weapon(WEAPON_ID_TRIDENT, "Trident", 12));
+        Weapons.Add(new Weapon(WEAPON_ID_GOLDEN_SWORD, "Golden sword", 15));
     }
 
     public static void PopulatePotions()
@@ -61,13 +68,13 @@ public static class World
 
     public static void PopulateMonsters()
     {
-        Monster rat = new Monster(MONSTER_ID_RAT, "rat", 1, 3, 3);
+        Monster rat = new Monster(MONSTER_ID_RAT, "rat", 4, 3, 3);
 
 
-        Monster snake = new Monster(MONSTER_ID_SNAKE, "snake", 10, 7, 7);
+        Monster snake = new Monster(MONSTER_ID_SNAKE, "snake", 2, 7, 7);
 
 
-        Monster giantSpider = new Monster(MONSTER_ID_GIANT_SPIDER, "giant spider", 3, 10, 10);
+        Monster giantSpider = new Monster(MONSTER_ID_GIANT_SPIDER, "giant spider", 8, 10, 10);
 
 
         Monsters.Add(rat);
@@ -98,6 +105,12 @@ public static class World
                         "Collect spider silk",
                         "Kill spiders in the spider forest", LOCATION_ID_SPIDER_FIELD, MonsterByID(MONSTER_ID_GIANT_SPIDER));
 
+
+        // Rewards from the "Rewards for quests" user story
+        clearAlchemistGarden.Rewards.Add(WeaponByID(WEAPON_ID_GOLDEN_SWORD));
+        clearAlchemistGarden.Rewards.Add(new Potion(POTION_ID_HEALING_POTION, "Healing potion", 5, 3, false));
+        clearFarmersField.Rewards.Add(WeaponByID(WEAPON_ID_TRIDENT));
+        clearSpidersForest.Rewards.Add(new Item(ITEM_ID_SPIDER_SILK, "Spider silk"));
 
         Quests.Add(clearAlchemistGarden);
         Quests.Add(clearFarmersField);
