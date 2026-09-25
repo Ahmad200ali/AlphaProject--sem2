@@ -321,8 +321,8 @@ public class Player
 
     public bool CanEnter(Location location)
     {
-        // the guard post, bridge and spider forest are locked until both quests are done
-        if (location.ID == World.LOCATION_ID_GUARD_POST || location.ID == World.LOCATION_ID_BRIDGE || location.ID == World.LOCATION_ID_SPIDER_FIELD)
+        // the guard lets you over the bridge (and to the spider forest) when both quests are done
+        if (location.ID == World.LOCATION_ID_BRIDGE || location.ID == World.LOCATION_ID_SPIDER_FIELD)
         {
             if (HasCompletedQuest(World.QUEST_ID_CLEAR_FARMERS_FIELD) && HasCompletedQuest(World.QUEST_ID_CLEAR_ALCHEMIST_GARDEN))
             {
